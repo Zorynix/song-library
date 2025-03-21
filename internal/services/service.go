@@ -20,11 +20,12 @@ type Services struct {
 }
 
 type ServicesDependencies struct {
-	Repos *repo.Repositories
+	Repos       *repo.Repositories
+	MusicAPIURL string
 }
 
 func NewServices(deps ServicesDependencies) *Services {
 	return &Services{
-		Song: NewSongService(deps.Repos),
+		Song: NewSongService(deps.Repos, deps.MusicAPIURL),
 	}
 }

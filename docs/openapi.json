@@ -1,0 +1,373 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "description": "API для управления библиотекой песен",
+        "title": "Song Library API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/songs": {
+            "get": {
+                "description": "Возвращает список песен с возможностью фильтрации по группе, названию и тексту",
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Получить список песен",
+                "parameters": [
+                    {
+                        "description": "Название группы",
+                        "name": "group",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Название песни",
+                        "name": "song",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Текст песни",
+                        "name": "text",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Лимит записей",
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Смещение",
+                        "name": "offset",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список песен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/entity.Song"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Добавляет новую песню, обогащая её данными из внешнего API",
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Добавить песню",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/entity.Song"
+                            }
+                        }
+                    },
+                    "description": "Данные песни (group и title обязательны)",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Созданная песня",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/entity.Song"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный запрос",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/{id}": {
+            "put": {
+                "description": "Обновляет данные песни по её ID",
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Обновить песню",
+                "parameters": [
+                    {
+                        "description": "ID песни",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/entity.Song"
+                            }
+                        }
+                    },
+                    "description": "Данные песни",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Обновленная песня",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/entity.Song"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный запрос или ID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Песня не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаляет песню по её ID",
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Удалить песню",
+                "parameters": [
+                    {
+                        "description": "ID песни",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Песня успешно удалена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный ID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Песня не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/{id}/verses": {
+            "get": {
+                "description": "Возвращает куплеты песни по её ID с пагинацией",
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Получить куплеты песни",
+                "parameters": [
+                    {
+                        "description": "ID песни",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Лимит куплетов",
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Смещение",
+                        "name": "offset",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список куплетов",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный ID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "//localhost:8080/api/v1"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "entity.Song": {
+                "type": "object",
+                "properties": {
+                    "group": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "link": {
+                        "type": "string"
+                    },
+                    "releaseDate": {
+                        "type": "string"
+                    },
+                    "text": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

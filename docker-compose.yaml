@@ -7,11 +7,11 @@ services:
     volumes:
       - pg-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: song_library
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "song_library"]
+      test: ["CMD-SHELL", "pg_isready", "-d", "${POSTGRES_DB}"]
       interval: 30s
       timeout: 60s
       retries: 5
@@ -20,6 +20,7 @@ services:
       - "5432:5432"
     restart: always
 
+
   app:
     container_name: song_library_app
     build:
@@ -27,21 +28,14 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./logs:/logs
-    environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: ${POSTGRES_PASSWORD:-password}
-      DB_NAME: song_library
-      APP_PORT: 8080
     ports:
       - "8080:8080"
+      - "9091:9091"
     depends_on:
       postgres:
         condition: service_healthy
     restart: unless-stopped
 
-  services:
   prometheus:
     container_name: prometheus
     image: prom/prometheus:latest
@@ -54,7 +48,7 @@ services:
       - app
     restart: unless-stopped
 
-    grafana:
+  grafana:
     container_name: grafana
     image: grafana/grafana:latest
     volumes:
@@ -64,7 +58,8 @@ services:
     depends_on:
       - prometheus
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
     restart: unless-stopped
 
 volumes:
