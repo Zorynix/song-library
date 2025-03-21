@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "${POSTGRES_DB}"]
+      test: [ "CMD", "pg_isready", "-q", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}" ]
       interval: 30s
       timeout: 60s
       retries: 5
@@ -23,7 +23,7 @@ services:
 
   app:
     container_name: song_library_app
-    image: dolbonya/song-library:latest
+    image: dolbonya/songs-library:latest
     volumes:
       - ./logs:/logs
     ports:
@@ -40,29 +40,10 @@ services:
     container_name: prometheus
     image: prom/prometheus:latest
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yaml
       - prometheus-data:/prometheus
     ports:
       - "9090:9090"
     depends_on:
       - app
     restart: unless-stopped
-
-  grafana:
-    container_name: grafana
-    image: grafana/grafana:latest
-    volumes:
-      - grafana-data:/var/lib/grafana
-    ports:
-      - "3000:3000"
-    depends_on:
-      - prometheus
-    environment:
-      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
-      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
-    restart: unless-stopped
-
-volumes:
-  pg-data:
-  prometheus-data:
-  grafana-data:
