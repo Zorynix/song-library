@@ -23,14 +23,14 @@ services:
 
   app:
     container_name: song_library_app
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: dolbonya/song-library:latest
     volumes:
       - ./logs:/logs
     ports:
       - "8080:8080"
       - "9091:9091"
+    env_file:
+      - .env
     depends_on:
       postgres:
         condition: service_healthy

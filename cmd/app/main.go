@@ -7,11 +7,18 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/Zorynix/song-library/internal/app"
 )
 
 const configPath = "config/config.yaml"
 
 func main() {
-	app.Run(configPath)
+	fmt.Println("Starting application...")
+	if err := app.Run(configPath); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
+	}
 }

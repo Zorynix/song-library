@@ -21,11 +21,13 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-func Run(configPath string) {
+func Run(configPath string) error {
+	fmt.Println("Loading config from", configPath)
 	cfg, err := config.NewConfig(configPath)
 	if err != nil {
 		logger.Logger.Fatal().Err(err).Msg("Failed to load config")
 	}
+	fmt.Println("Config loaded successfully")
 
 	logger.SetupLogger(cfg.Log.Level)
 
@@ -90,4 +92,6 @@ func Run(configPath string) {
 	}
 
 	logger.Logger.Info().Msg("Servers exited")
+
+	return nil
 }

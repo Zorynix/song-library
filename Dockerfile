@@ -18,6 +18,8 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 
 WORKDIR /app
 COPY --from=builder /app/song-library /app/song-library
+COPY config/config.yaml /app/config/config.yaml
+COPY migrations /app/migrations
 
 ENV TZ=Europe/Moscow
 ENV APP_PORT=8080
